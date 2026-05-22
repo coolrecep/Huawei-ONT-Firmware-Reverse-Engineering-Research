@@ -78,7 +78,28 @@ SHA-256 component hashes (R019 baseline):
 
 ```
 Firmware/
+├── README.md                       # Main research overview (this file)
 ├── Root.md                         # Full live-shell research notes (2378 lines)
+├── docs/                           # Detailed sub-reports & installation guides
+│   ├── Crypto_Extraction_Report.md
+│   ├── Final_Crypto_Analysis_Report.md
+│   ├── busybox_usb_installation_guide.md
+│   ├── complete_busybox_usb_guide.md
+│   ├── crypto_reverse_engineering_report.md
+│   ├── router_key_status.md
+│   ├── router_web_interface_analysis.md
+│   └── web_interface_version_analysis.md
+├── scripts/                        # Organized reverse engineering python/shell scripts
+│   ├── extraction/                 # Flash dump scanning & SquashFS extraction scripts
+│   ├── root_telnet/                # Privilege escalation & telnet access triggers
+│   ├── crypto/                     # Key crack bruteforce, decompilation mock sources & hooks
+│   └── web/                        # Web interface session tools & brute-forcing
+├── libs/                           # Shared object libraries extracted from firmware
+│   ├── libc.so
+│   ├── libhw_smp_capi.so
+│   ├── libl3_base_api.so
+│   ├── libmbedcrypto.so
+│   └── libmbedtls.so
 ├── R021-KriptoMaden/               # Cryptographic material extracted from firmware
 │   ├── dropbear_rsa_host_key       # Dropbear RSA host key (872 bytes)
 │   ├── kmc_store_A                 # KMC encrypted store A (1698 bytes)
@@ -87,9 +108,7 @@ Firmware/
 │   ├── su_pub_key                  # Superuser public key (126 bytes)
 │   ├── diagchar.ko                 # Diagnostic char device kernel module
 │   ├── ftm                         # Factory Test Mode binary (ARM ELF)
-│   ├── hw_boardinfo                # Board identity (KM-prefix, encrypted)
-│   ├── module_desc_bak.xml         # Module path descriptor
-│   ├── module_mode                 # Module mode flag
+│   ├── hw_boardinfo                # Board identity (KM-magic prefix)
 │   └── weakpwdlist.cfg             # Weak password blocklist (4104 bytes)
 ├── ONTS/                           # ONT provisioning & firmware flashing toolkit
 │   ├── R019_allShell.bin           # R019 all-section shell bundle
@@ -114,9 +133,9 @@ Firmware/
 │       ├── tftpd64.exe
 │       ├── hwmtd.zip
 │       └── shell/                  # R22/R24 firmware shell payloads
-├── rootfs.squashfs                 # Primary rootfs image (81 MB)
-├── rootfs2.squashfs                # Secondary rootfs image (42 MB)
-├── 20260518_140638_TC58CVG2S0HRA.bin  # Full NAND dump (512 MB)
+├── rootfs.squashfs                 # Primary rootfs image (81 MB, Git LFS)
+├── rootfs2.squashfs                # Secondary rootfs image (42 MB, Git LFS)
+├── 20260518_140638_TC58CVG2S0HRA.bin # Full NAND dump (512 MB, excluded)
 └── TC58CVG2S0HRAIG.PDF             # NAND flash chip datasheet
 ```
 
@@ -168,7 +187,7 @@ file_system    0x01400000  (20 MB)
 
 ```bash
 # Locate SquashFS signatures in NAND dump
-python3 find_hsqs_vol4.py
+python3 scripts/extraction/find_hsqs_vol4.py
 
 # Extract primary rootfs (Huawei-variant SquashFS)
 sasquatch -p 1 -le -dest rootfs_extract/ volume_4_squashfs.bin
