@@ -1,0 +1,37 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Raw NAND dumps — too large even for LFS free tier
+20260518_140638_TC58CVG2S0HRA.bin
+raw_dump.bin
+clean_dump.bin
+
+# Large squashfs images — tracked via LFS instead
+# rootfs.squashfs
+# rootfs2.squashfs
+
+# Extracted filesystem trees — too large to track
+rootfs_extract/
+rootfs_extract2/
+squashfs-root-recovered/
+_clean_dump.bin.extracted/
+_rootfs.squashfs.extracted/
+extracted_partitions/
+fmk/
+ubi_extract/
+telnet_extraction/
+router_extraction/
+root_memory_extraction/
+
+# Dropbear build tree (compiled locally)
+R021-KriptoMaden/dropbear/
+
+# Temporary
+*.tmp
+cookies.txt
+new_cookies.txt
+new_session.txt
+session_cookies.txt

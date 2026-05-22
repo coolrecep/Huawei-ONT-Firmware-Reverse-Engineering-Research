@@ -1,0 +1,20 @@
+
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+59948         0xEA2C          SHA256 hash constants, little endian
+60204         0xEB2C          CRC32 polynomial table, little endian
+127040        0x1F040         Certificate in DER format (x509 v3), header length: 4, sequence length: 1290
+410966        0x64556         SHA256 hash constants, little endian
+411282        0x64692         CRC32 polynomial table, little endian
+412356        0x64AC4         CRC32 polynomial table, little endian
+413638        0x64FC6         CRC32 polynomial table, little endian
+417082        0x65D3A         PEM certificate
+498060        0x7998C         Certificate in DER format (x509 v3), header length: 4, sequence length: 1359
+673110        0xA4556         SHA256 hash constants, little endian
+673426        0xA4692         CRC32 polynomial table, little endian
+674500        0xA4AC4         CRC32 polynomial table, little endian
+675782        0xA4FC6         CRC32 polynomial table, little endian
+679226        0xA5D3A         PEM certificate
+760204        0xB998C         Certificate in DER format (x509 v3), header length: 4, sequence length: 1359
+2097152       0x200000        UBI erase count header, version: 1, EC: 0x1, VID header offset: 0x1000, data offset: 0x2000
+
