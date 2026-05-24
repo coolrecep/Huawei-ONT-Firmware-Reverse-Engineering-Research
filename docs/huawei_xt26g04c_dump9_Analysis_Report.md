@@ -69,3 +69,60 @@ Several notable strings extracted from the dump confirm device identity and syst
 - **Hardware Drivers:** SPI NAND controller drivers, Flash chip type detection tables.
 - **UBIFS Logging:** Diagnostic mount messages, flash bad-block recovery logs.
 - **Huawei ONT Identifiers:** Board configuration parameters and operator customizations.
+
+---
+
+## 5. Embedded Flash Partition Map XML Specification
+
+During reverse engineering of the firmware binaries, the following raw XML partition mapping specification was retrieved. This XML defines the precise boundaries, lengths, and alternate rotation configs (A/B partitioning) for both the bootloader/startcode and the `ubilayer_v5` volumes.
+
+### 5.1 Reconstructed Clean XML Specification
+Due to a known flash/memory corruption issue affecting `flash_config lengthA`, the corrupted bytes were reconstructed back to `0x0003E000` (matching the `lengthB` property and other param tags):
+
+```xml
+<root>
+  <option system_pack="1" flash_size="0x20000000" partubi="1"/> 
+  <bootcode rotate_flag="0" address0="0" length0="0x00200000" ubiflag ="0"/>
+  <bootcode:L1boot  rotate_flag="0" address0="0" length0="0x00040000" ubiflag ="0"/>
+  <bootcode:L2boot  rotate_flag="1" addressA="0x00040000" lengthA="0x00040000"  addressB="0x00080000" lengthB="0x00040000" ubiflag ="0"/>
+  <bootcode:eFuse   rotate_flag="0" address0="0x000C0000" length0="0x00040000" ubiflag ="0"/>
+  <allsystem rotate_flag="1" addressA="0" lengthA="0x0502A000" addressB="0" lengthB="0x0502A000" ubiflag ="0"/>
+  <allsystem:signinfo    rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>  
+  <allsystem:uboot    rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>  
+  <allsystem:kernel  rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/> 
+  <allsystem:rootfs  rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>
+  <ubilayer_v5 rotate_flag="0" address0="0" length0="0x14DBC000" ubiflag ="1"/>
+  <ubilayer_v5:flash_config rotate_flag="1" addressA="0" lengthA="0x0003E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+  <ubilayer_v5:slave_param rotate_flag="1" addressA="0" lengthA="0x0003E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+  <ubilayer_v5:wifi_param rotate_flag="1" addressA="0" lengthA="0x0003E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+  <ubilayer_v5:keyfile rotate_flag="0" address0="0" length0="0x0022E000" ubiflag ="1"/>
+  <ubilayer_v5:file_system rotate_flag="0" address0="0" length0="0x0141A000" ubiflag ="1"/>
+  <ubilayer_v5:app_system rotate_flag="0" address0="0" length0="0x1273A000" ubiflag ="1"/>
+</root>
+```
+
+### 5.2 Raw Extracted XML (with Memory Corruption)
+The raw data read from the flash dump contains a corruption signature within `flash_config lengthA`:
+
+```xml
+<root>
+<option system_pack="1" flash_size="0x20000000" partubi="1"/> 
+<bootcode rotate_flag="0" address0="0" length0="0x00200000" ubiflag ="0"/>
+<bootcode:L1boot  rotate_flag="0" address0="0" length0="0x00040000" ubiflag ="0"/>
+<bootcode:L2boot  rotate_flag="1" addressA="0x00040000" lengthA="0x00040000"  addressB="0x00080000" lengthB="0x00040000" ubiflag ="0"/>
+<bootcode:eFuse   rotate_flag="0" address0="0x000C0000" length0="0x00040000" ubiflag ="0"/>
+<allsystem rotate_flag="1" addressA="0" lengthA="0x0502A000" addressB="0" lengthB="0x0502A000" ubiflag ="0"/>
+<allsystem:signinfo    rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>  
+<allsystem:uboot    rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>  
+<allsystem:kernel  rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/> 
+<allsystem:rootfs  rotate_flag="0" address0="-1" length0="-1" ubiflag ="0"/>
+<ubilayer_v5 rotate_flag="0" address0="0" length0="0x14DBC000" ubiflag ="1"/>
+<ubilayer_v5:flash_config rotate_flag="1" addressA="0" lengthA="0x0003 Ե)G    	.#
++2Co r  1$C     E` ?n + *E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+<ubilayer_v5:slave_param rotate_flag="1" addressA="0" lengthA="0x0003E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+<ubilayer_v5:wifi_param rotate_flag="1" addressA="0" lengthA="0x0003E000" addressB="0" lengthB="0x0003E000" ubiflag ="1"/>
+<ubilayer_v5:keyfile rotate_flag="0" address0="0" length0="0x0022E000" ubiflag ="1"/>
+<ubilayer_v5:file_system rotate_flag="0" address0="0" length0="0x0141A000" ubiflag ="1"/>
+<ubilayer_v5:app_system rotate_flag="0" address0="0" length0="0x1273A000" ubiflag ="1"/>
+</root>
+```
