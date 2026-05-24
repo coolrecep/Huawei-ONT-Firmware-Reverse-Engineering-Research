@@ -96,6 +96,7 @@ Firmware/
 │   ├── hw_flashcfg_shaopian_4k.xml     # Flash layout spec (Modern 4K page)
 │   ├── router_key_status.md
 │   ├── router_web_interface_analysis.md
+│   ├── verified_suser_passwords.md     # Summary of extracted & verified sUser passwords
 │   └── web_interface_version_analysis.md
 ├── scripts/                        # Organized reverse engineering python/shell scripts
 │   ├── extraction/                 # Flash dump scanning & SquashFS extraction scripts
