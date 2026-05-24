@@ -90,6 +90,7 @@ Firmware/
 │   ├── crypto_reverse_engineering_report.md
 │   ├── huaweiXML_CFG_Analysis_Report.md # Analysis of huaweiXML_CFG.exe config & password crypto
 │   ├── huawei_xt26g04c_dump9_Analysis_Report.md # Analysis of XT26G04C NAND flash dump
+│   ├── hw_ctree_2_Analysis_Report.md   # Analysis & Decryption of hw_ctree_2.xml configuration
 │   ├── router_key_status.md
 │   ├── router_web_interface_analysis.md
 │   └── web_interface_version_analysis.md
@@ -158,6 +159,9 @@ Firmware/
 ├── rootfs2.squashfs                # Secondary rootfs image (42 MB, Git LFS)
 ├── 20260518_140638_TC58CVG2S0HRA.bin # Full NAND dump (512 MB, excluded)
 ├── huawei_xt26g04c_dump9.bin       # Raw XT26G04C NAND flash dump (512 MB, Git LFS)
+├── hw_ctree.xml                    # Decrypted XML configuration tree (198 KB)
+├── hw_ctree.xml.enc                # Encrypted XML configuration tree (33 KB)
+├── hw_ctree_2.xml                  # Second decrypted XML configuration tree (198 KB)
 └── TC58CVG2S0HRAIG.PDF             # NAND flash chip datasheet
 ```
 
