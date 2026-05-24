@@ -17,6 +17,7 @@
 - [Cryptographic Material (R021-KriptoMaden)](#cryptographic-material-r021-kriptomaden)
 - [ONTS Toolkit Analysis](#onts-toolkit-analysis)
 - [R23R24 Rebranding Toolkit](#r23r24-rebranding-toolkit)
+- [Configuration & Password Cryptographic Tool](#configuration--password-cryptographic-tool)
 - [HWNP Binary Format](#hwnp-binary-format)
 - [OSBC Flash Protocol](#osbc-flash-protocol)
 - [Network Services](#network-services)
@@ -94,6 +95,8 @@ Firmware/
 │   ├── extraction/                 # Flash dump scanning & SquashFS extraction scripts
 │   ├── root_telnet/                # Privilege escalation & telnet access triggers
 │   ├── crypto/                     # Key crack bruteforce, decompilation mock sources & hooks
+│   │   ├── huawei_xml_cfg_tool.py  # Standalone python clone of huaweiXML_CFG.exe
+│   │   └── ...
 │   └── web/                        # Web interface session tools & brute-forcing
 ├── libs/                           # Shared object libraries extracted from firmware
 │   ├── libc.so
@@ -528,6 +531,40 @@ Fields: LOID prefix, hardware serial mask, default WiFi password, SSID prefix (`
 | Equipment mode (`192.168.100.1`) | `root` | `admin` |
 | Equipment mode (`192.168.1.1`) | `root` | `Admin123` |
 | Post-rebrand Unicom login | `CUAdmin` | `CUAdmin` |
+
+---
+
+## Configuration & Password Cryptographic Tool
+
+The file `R23R24/华为配置加解密工具.exe` (unpacked as `huaweiXML_CFG.exe`) is used to encrypt and decrypt Huawei configuration files (`.enc`, `.cfg`, `hw_ctree.xml`) and decrypt stored password hashes. 
+
+To run these operations offline without executing untrusted Windows binaries, we developed a pure-Python 3 clone utility: [huawei_xml_cfg_tool.py](file:///home/recep/Masaüstü/Firmware/scripts/crypto/huawei_xml_cfg_tool.py).
+
+For a detailed analysis of the underlying cryptographic layout, dynamic key derivation, custom CRC-32 table, and base-93 encoding algorithms, see the full [Huawei ONT Config Cryptography Analysis Report](file:///home/recep/Masaüstü/Firmware/docs/huaweiXML_CFG_Analysis_Report.md).
+
+### Python Tool Usage
+
+#### 1. Configuration Decryption
+Decrypts an encrypted `.enc` or `.cfg` configuration file to readable XML:
+```bash
+python3 scripts/crypto/huawei_xml_cfg_tool.py decrypt-cfg hw_ctree.xml.enc decrypted_cfg.xml
+```
+
+#### 2. Configuration Encryption
+Re-encrypts a modified XML configuration file into a valid encrypted `.enc` file (including GZIP compression, custom chunked CRC-32 calculation, and HMAC-SHA256 signature):
+```bash
+python3 scripts/crypto/huawei_xml_cfg_tool.py encrypt-cfg modified_cfg.xml output_ctree.xml.enc
+```
+
+#### 3. Password Decryption
+Auto-detects and decrypts stored configuration passwords, Wi-Fi keys, and tokens (Modes 1, 2, and 3):
+```bash
+# Decrypt a WLAN WPS DevicePassword (Mode 2)
+python3 scripts/crypto/huawei_xml_cfg_tool.py decrypt-pwd '$2,t}i4H/rN%*Ad^@>a#Y7n*ioL)}/a=kb7m$-K8SF$'
+
+# Decrypt a CLI superuser password (Mode 2)
+python3 scripts/crypto/huawei_xml_cfg_tool.py decrypt-pwd '$2E\c^%:rrwHfV*nC|:4-NV|#LA*#@=I@r.V(IQ-lP$'
+```
 
 ---
 
