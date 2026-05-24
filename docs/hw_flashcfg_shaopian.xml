@@ -1,0 +1,19 @@
+<root>
+<option system_pack="1" flash_size="0x20000000" partubi="1"/>
+<bootcode rotate_flag="0" address0="0" length0="0x00100000" ubiflag ="0"/>
+    <bootcode:L1boot rotate_flag="0" address0="0" length0="0x00020000" ubiflag ="0"/>
+    <bootcode:L2boot rotate_flag="1" addressA="0x00020000" lengthA="0x00040000"  addressB="0x00060000" lengthB="0x00040000" ubiflag ="0"/>
+    <bootcode:eFuse rotate_flag="0" address0="0x000a0000" length0="0x00020000" ubiflag ="0"/>
+<ubilayer_v5 rotate_flag="0" address0="0" length0="0x1FF00000" ubiflag ="1"/>
+    <ubilayer_v5:flash_config rotate_flag="1" addressA="0" lengthA="0x0001F000" addressB="0" lengthB="0x0001F000" ubiflag ="1"/>
+    <ubilayer_v5:slave_param rotate_flag="1" addressA="0" lengthA="0x0001F000" addressB="0" lengthB="0x0001F000" ubiflag ="1"/>
+    <ubilayer_v5:allsystem rotate_flag="1" addressA="0" lengthA="0x0502A000" addressB="0" lengthB="0x0502A000" ubiflag ="1"/>
+        <allsystem:signinfo rotate_flag="0" address0="-1" length0="-1" ubiflag ="1"/>
+        <allsystem:uboot rotate_flag="0" address0="-1" length0="-1" ubiflag ="1"/>
+        <allsystem:kernel rotate_flag="0" address0="-1" length0="-1" ubiflag ="1"/>
+        <allsystem:rootfs rotate_flag="0" address0="-1" length0="-1" ubiflag ="1"/>
+    <ubilayer_v5:wifi_param rotate_flag="1" addressA="0" lengthA="0x0001F000" addressB="0" lengthB="0x0001F000" ubiflag ="1"/>
+    <ubilayer_v5:keyfile rotate_flag="0" address0="0" length0="0x0022E000" ubiflag ="1"/>
+    <ubilayer_v5:file_system rotate_flag="0" address0="0" length0="0x0141A000" ubiflag ="1"/>
+    <ubilayer_v5:app_system rotate_flag="0" address0="0" length0="0x1273A000" ubiflag ="1"/>
+</root>

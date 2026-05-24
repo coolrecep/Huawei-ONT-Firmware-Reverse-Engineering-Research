@@ -91,6 +91,9 @@ Firmware/
 │   ├── huaweiXML_CFG_Analysis_Report.md # Analysis of huaweiXML_CFG.exe config & password crypto
 │   ├── huawei_xt26g04c_dump9_Analysis_Report.md # Analysis of XT26G04C NAND flash dump
 │   ├── hw_ctree_2_Analysis_Report.md   # Analysis & Decryption of hw_ctree_2.xml configuration
+│   ├── hw_flashcfg_Analysis_Report.md  # Analysis & Comparison of flash partition layouts
+│   ├── hw_flashcfg_shaopian.xml        # Flash layout spec (Standard 2K page)
+│   ├── hw_flashcfg_shaopian_4k.xml     # Flash layout spec (Modern 4K page)
 │   ├── router_key_status.md
 │   ├── router_web_interface_analysis.md
 │   └── web_interface_version_analysis.md
@@ -168,6 +171,8 @@ Firmware/
 ---
 
 ## NAND Flash Layout
+
+Details on the raw XML partition definitions and boundaries for standard vs. 4K page layouts can be found in the [Flash Configuration Analysis Report](file:///home/recep/Masaüstü/Firmware/docs/hw_flashcfg_Analysis_Report.md).
 
 ### 1. SPI-NAND: TC58CVG2S0HRA — 512 MB total
 
