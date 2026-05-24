@@ -16,6 +16,7 @@
 - [Privilege Escalation — Root Access](#privilege-escalation--root-access)
 - [Cryptographic Material (R021-KriptoMaden)](#cryptographic-material-r021-kriptomaden)
 - [ONTS Toolkit Analysis](#onts-toolkit-analysis)
+- [R23R24 Rebranding Toolkit](#r23r24-rebranding-toolkit)
 - [HWNP Binary Format](#hwnp-binary-format)
 - [OSBC Flash Protocol](#osbc-flash-protocol)
 - [Network Services](#network-services)
@@ -133,6 +134,21 @@ Firmware/
 │       ├── tftpd64.exe
 │       ├── hwmtd.zip
 │       └── shell/                  # R22/R24 firmware shell payloads
+├── R23R24/                         # China Unicom ISP rebranding & provisioning toolkit
+│   ├── HS8545M5_V500R020C00SPC200B459.bin  # Full HWNP firmware (54 MB)
+│   ├── R24补全包.bin               # R24 completion bundle (TelnetEnable + EquipMode)
+│   ├── shell9.bin                  # R019 HWNP shell patch
+│   ├── unicom.tar.gz               # China Unicom province configs (30+ provinces)
+│   ├── customizepara.txt           # Board identity 3-code parameters
+│   ├── 必看步骤.jpg                # Visual step-by-step guide (Chinese)
+│   ├── 一键操作.bat                # One-click TFTP + boardinfo replace + reboot
+│   ├── 一键打开装备模式*.bat       # Enable Equipment Mode (2 IP variants)
+│   ├── 一键关闭装备模式.bat        # Disable Equipment Mode + reboot
+│   ├── 开启电脑telnet.bat          # Enable Windows Telnet/TFTP + aux IP setup
+│   ├── ONT_V100R002C00SPC253.exe   # ONT management GUI
+│   ├── HW Dollar2.exe              # hw_boardinfo identity editor (.NET)
+│   ├── tftpd32.exe                 # TFTP server (32-bit)
+│   └── 华为配置加解密工具.exe      # Config encrypt/decrypt tool (UPX packed)
 ├── rootfs.squashfs                 # Primary rootfs image (81 MB, Git LFS)
 ├── rootfs2.squashfs                # Secondary rootfs image (42 MB, Git LFS)
 ├── 20260518_140638_TC58CVG2S0HRA.bin # Full NAND dump (512 MB, excluded)
@@ -450,6 +466,71 @@ Operations: UpgradeBin ×1, CloseTelnet ×6
 
 ---
 
+## R23R24 Rebranding Toolkit
+
+The `R23R24/` folder contains a **complete China Unicom ISP rebranding and provisioning toolkit** for Huawei ONT devices running firmware versions R023–R024.
+
+### HWNP Payloads
+
+| File | Version | Target Products | Flash Targets | Purpose |
+|------|---------|----------------|---------------|---------|
+| `HS8545M5_V500R020C00SPC200B459.bin` | V500R020C00SPC200B459 | `147C\|149C\|14ED\|14FD` + CMCC | `flash:uboot`, `flash:kernel`, `flash:rootfs` + plugins | Full firmware image for HS8545M5 (54 MB) |
+| `R24补全包.bin` | R024 | 30+ product IDs (`120\|130\|140\|...\|431`) | `file:/mnt/jffs2/TelnetEnable`, `file:/mnt/jffs2/equipment.tar.gz` | Enable Telnet + Equipment Mode |
+| `shell9.bin` | V500R019C20SPC105B120 | `147C\|148C\|14ED\|15BD\|182F` | `file:/var/signature` | Shell patch — writes `hw_hardinfo_feature` to enable CLI China mode |
+
+### China Unicom Province Customization (`unicom.tar.gz`)
+
+Contains ISP-specific default configuration for **all Chinese provinces** under China Unicom (联通):
+
+```
+unicom.tar.gz/
+├── choose/               # Operator selection XML
+├── customize/            # 30+ province-specific configs with CRC checksums
+│   ├── hw_default_bjunicom.xml   (Beijing)
+│   ├── hw_default_shcu.xml       (Shanghai)
+│   ├── hw_default_gdcu.xml       (Guangdong)
+│   └── ... (all provinces)
+├── hw_boardinfo          # Pre-configured board identity
+└── hw_default_ctree.xml  # Default configuration tree
+```
+
+### Automation Batch Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `开启电脑telnet.bat` | Enables Windows Telnet/TFTP clients, adds auxiliary IP `192.168.100.2/24` |
+| `一键打开装备模式192.168.1.1.bat` | Telnet → `root`/`Admin123` → `su` → `EquipMode.sh on` → `reset` |
+| `一键打开装备模式192.168.100.1.bat` | Telnet → `root`/`admin` → `su` → `EquipMode.sh on` → `reset` |
+| `一键关闭装备模式.bat` | Telnet → `root`/`admin` → `EquipMode.sh off` → `reboot` |
+| `一键操作.bat` | Full one-click: TFTP backup `hw_boardinfo` → upload `unicom.tar.gz` → extract → reboot |
+
+### Board Identity Config (`customizepara.txt`)
+
+```
+01FFFFFFFF023FFF19HWTC920A40B47E bn5m4uzz  CU_Aq9b bn5m4uzz  CU_Aq9b-5G bn5m4uzz
+```
+
+Fields: LOID prefix, hardware serial mask, default WiFi password, SSID prefix (`CU_xxx`), 5G SSID suffix.
+
+### Windows Tools
+
+| Tool | Purpose |
+|------|---------|
+| `HW Dollar2.exe` | `.NET` GUI editor for `hw_boardinfo` — modifies device identity fields (obj.id values) |
+| `ONT_V100R002C00SPC253.exe` | ONT management GUI (firmware flashing, Telnet toggle) |
+| `tftpd32.exe` | TFTP server for file transfer between PC and router |
+| `华为配置加解密工具.exe` | Huawei configuration file encrypt/decrypt utility (UPX packed) |
+
+### Default Credentials
+
+| Context | Username | Password |
+|---------|----------|----------|
+| Equipment mode (`192.168.100.1`) | `root` | `admin` |
+| Equipment mode (`192.168.1.1`) | `root` | `Admin123` |
+| Post-rebrand Unicom login | `CUAdmin` | `CUAdmin` |
+
+---
+
 ## HWNP Binary Format
 
 ```
@@ -569,6 +650,9 @@ Result codes:
 | 6 | **OBSC result `0xf720404e` is static per-device** — authentication challenge/response is predictable | **Medium** |
 | 7 | **KMC hardware-backed encryption** — cryptographic keys protected by dedicated chip; software extraction not feasible without hardware | Informational |
 | 8 | **SquashFS rootfs is read-only** — all persistence must go through JFFS2 | Informational |
+| 9 | **Equipment Mode default credentials `root`/`admin`** — batch scripts automate Telnet login with well-known factory passwords | **High** |
+| 10 | **ISP rebranding toolkit** — `R23R24/` contains a complete one-click workflow to rebrand ONT identity (hw_boardinfo), flash custom firmware, and overlay China Unicom province configs | **Medium** |
+| 11 | **Config encrypt/decrypt tool** — `华为配置加解密工具.exe` can decrypt Huawei configuration files, exposing all device settings | **Medium** |
 
 ---
 
