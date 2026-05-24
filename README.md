@@ -88,6 +88,8 @@ Firmware/
 │   ├── busybox_usb_installation_guide.md
 │   ├── complete_busybox_usb_guide.md
 │   ├── crypto_reverse_engineering_report.md
+│   ├── huaweiXML_CFG_Analysis_Report.md # Analysis of huaweiXML_CFG.exe config & password crypto
+│   ├── huawei_xt26g04c_dump9_Analysis_Report.md # Analysis of XT26G04C NAND flash dump
 │   ├── router_key_status.md
 │   ├── router_web_interface_analysis.md
 │   └── web_interface_version_analysis.md
@@ -155,12 +157,15 @@ Firmware/
 ├── rootfs.squashfs                 # Primary rootfs image (81 MB, Git LFS)
 ├── rootfs2.squashfs                # Secondary rootfs image (42 MB, Git LFS)
 ├── 20260518_140638_TC58CVG2S0HRA.bin # Full NAND dump (512 MB, excluded)
+├── huawei_xt26g04c_dump9.bin       # Raw XT26G04C NAND flash dump (512 MB, Git LFS)
 └── TC58CVG2S0HRAIG.PDF             # NAND flash chip datasheet
 ```
 
 ---
 
 ## NAND Flash Layout
+
+### 1. SPI-NAND: TC58CVG2S0HRA — 512 MB total
 
 ```
 SPI-NAND: TC58CVG2S0HRA — 512 MB total
@@ -169,6 +174,18 @@ SPI-NAND: TC58CVG2S0HRA — 512 MB total
 ├─────────────────┼────────────┼────────────┼──────────────────────────┤
 │ bootcode (raw)  │ 0x00000000 │ 0x00200000 │ Boot ROM (2 MB)          │
 │ ubilayer_v5     │ 0x00200000 │ 0x1FE00000 │ UBI container (510 MB)   │
+└─────────────────┴────────────┴────────────┴──────────────────────────┘
+```
+
+### 2. SPI-NAND: XT26G04C — 512 MB total
+
+```
+SPI-NAND: XT26G04C — 512 MB total (from `huawei_xt26g04c_dump9.bin`)
+┌─────────────────┬────────────┬────────────┬──────────────────────────┐
+│ Partition       │ Start      │ Size       │ Contents                 │
+├─────────────────┼────────────┼────────────┼──────────────────────────┤
+│ startcode (raw) │ 0x00000000 │ 0x00200000 │ Startcode (2 MB)         │
+│ ubifs           │ 0x00200000 │ 0x1FE00000 │ UBI container (510 MB)   │
 └─────────────────┴────────────┴────────────┴──────────────────────────┘
 ```
 
