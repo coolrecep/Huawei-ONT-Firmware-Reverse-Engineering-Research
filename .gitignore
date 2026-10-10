@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Raw NAND dumps
+*.bin
+raw_dump.bin
+clean_dump.bin
+
+# Extracted filesystem trees
+rootfs_extract/
+rootfs_extract2/
+squashfs-root-recovered/
+_clean_dump.bin.extracted/
+_rootfs.squashfs.extracted/
+extracted_partitions/
+fmk/
+ubi_extract/
+
+# Temporary
+*.tmp
